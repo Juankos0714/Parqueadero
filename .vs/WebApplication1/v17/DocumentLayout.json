@@ -3,12 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|c:\\users\\jucar\\documentos\\software_development\\carlos manuel\\webapplication1\\webapplication1\\controllers\\vehiculoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\vehiculoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|c:\\users\\jucar\\documentos\\software_development\\carlos manuel\\webapplication1\\webapplication1\\controllers\\reportescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\reportescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|c:\\users\\jucar\\documentos\\software_development\\carlos manuel\\webapplication1\\webapplication1\\models\\vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|c:\\users\\jucar\\documentos\\software_development\\carlos manuel\\webapplication1\\webapplication1\\views\\aprendiz\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\aprendiz\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|c:\\users\\jucar\\documentos\\software_development\\carlos manuel\\webapplication1\\webapplication1\\views\\vehiculos\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\vehiculos\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|c:\\users\\jucar\\documentos\\software_development\\carlos manuel\\webapplication1\\webapplication1\\controllers\\vehiculoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\controllers\\vehiculoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|c:\\users\\jucar\\documentos\\software_development\\carlos manuel\\webapplication1\\webapplication1\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -23,14 +35,6 @@
       "RelativeMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\data\\seeddata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|c:\\users\\jucar\\documentos\\software_development\\carlos manuel\\webapplication1\\webapplication1\\models\\vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\models\\vehiculos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|c:\\users\\jucar\\documentos\\software_development\\carlos manuel\\webapplication1\\webapplication1\\views\\vehiculos\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\vehiculos\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|c:\\users\\jucar\\documentos\\software_development\\carlos manuel\\webapplication1\\webapplication1\\views\\parqueos\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{E1F519E6-4790-425C-B8E2-B66B1646EE3D}|WebApplication1\\WebApplication1.csproj|solutionrelative:webapplication1\\views\\parqueos\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
@@ -42,7 +46,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 40,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,20 +54,32 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Dashboard.cshtml",
-              "DocumentMoniker": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Views\\Aprendiz\\Dashboard.cshtml",
-              "RelativeDocumentMoniker": "WebApplication1\\Views\\Aprendiz\\Dashboard.cshtml",
-              "ToolTip": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Views\\Aprendiz\\Dashboard.cshtml",
-              "RelativeToolTip": "WebApplication1\\Views\\Aprendiz\\Dashboard.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-27T13:33:12.097Z",
+              "DocumentIndex": 0,
+              "Title": "ReportesController.cs",
+              "DocumentMoniker": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Controllers\\ReportesController.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Controllers\\ReportesController.cs",
+              "ToolTip": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Controllers\\ReportesController.cs",
+              "RelativeToolTip": "WebApplication1\\Controllers\\ReportesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-29T04:21:11.714Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Views\\Aprendiz\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "WebApplication1\\Views\\Aprendiz\\Dashboard.cshtml",
+              "ToolTip": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Views\\Aprendiz\\Dashboard.cshtml",
+              "RelativeToolTip": "WebApplication1\\Views\\Aprendiz\\Dashboard.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-27T13:33:12.097Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Controllers\\HomeController.cs",
@@ -71,12 +87,11 @@
               "RelativeToolTip": "WebApplication1\\Controllers\\HomeController.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAAA1wAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T13:32:59.843Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-27T13:32:59.843Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "SeedData.cs",
               "DocumentMoniker": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Data\\SeedData.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Data\\SeedData.cs",
@@ -84,12 +99,11 @@
               "RelativeToolTip": "WebApplication1\\Data\\SeedData.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAA4AAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T13:25:40.538Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-27T13:25:40.538Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Data\\ApplicationDbContext.cs",
@@ -97,36 +111,35 @@
               "RelativeToolTip": "WebApplication1\\Data\\ApplicationDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-27T13:25:28.02Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-27T13:25:28.02Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
               "Title": "Vehiculos.cs",
               "DocumentMoniker": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Models\\Vehiculos.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Models\\Vehiculos.cs",
               "ToolTip": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Models\\Vehiculos.cs",
               "RelativeToolTip": "WebApplication1\\Models\\Vehiculos.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBAAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-27T04:23:08.524Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 3,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Views\\Vehiculos\\Create.cshtml",
               "RelativeDocumentMoniker": "WebApplication1\\Views\\Vehiculos\\Create.cshtml",
               "ToolTip": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Views\\Vehiculos\\Create.cshtml",
               "RelativeToolTip": "WebApplication1\\Views\\Vehiculos\\Create.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-09-26T13:35:19.919Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "Create.cshtml",
               "DocumentMoniker": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Views\\Parqueos\\Create.cshtml",
               "RelativeDocumentMoniker": "WebApplication1\\Views\\Parqueos\\Create.cshtml",
@@ -138,7 +151,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "VehiculosController.cs",
               "DocumentMoniker": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\Controllers\\VehiculosController.cs",
               "RelativeDocumentMoniker": "WebApplication1\\Controllers\\VehiculosController.cs",
@@ -146,8 +159,7 @@
               "RelativeToolTip": "WebApplication1\\Controllers\\VehiculosController.cs",
               "ViewState": "AgIAAA4AAAAAAAAAAAAQwAwAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-26T13:24:33.624Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-26T13:24:33.624Z"
             }
           ]
         },

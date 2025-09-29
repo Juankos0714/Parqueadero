@@ -37,7 +37,7 @@ namespace WebApplication1.Controllers
             {
                 Id = p.Id,
                 Placa = p.Vehiculo.Placa,
-                Tipo = p.Vehiculo.Tipo,
+                Tipo = p.Vehiculo.Tipo.ToString(),
                 NombrePropietario = p.Usuario.Nombre,
                 HoraEntrada = p.FechaEntrada,
                 TiempoTranscurrido = CalcularTiempoTranscurrido(p.FechaEntrada),
@@ -45,8 +45,8 @@ namespace WebApplication1.Controllers
             }).ToList();
 
             // Calcular métricas adicionales del dashboard
-            model.CarrosDentro = vehiculos.Count(v => v.Vehiculo.Tipo == "Carro");
-            model.MotasDentro = vehiculos.Count(v => v.Vehiculo.Tipo == "Moto");
+            model.CarrosDentro = vehiculos.Count(v => v.Vehiculo.Tipo == TipoVehiculo.Carro);
+            model.MotasDentro = vehiculos.Count(v => v.Vehiculo.Tipo == TipoVehiculo.Moto);
 
             var hoy = DateTime.Now.Date;
             model.IngresosHoy = await _context.Parqueos
@@ -96,7 +96,7 @@ namespace WebApplication1.Controllers
                     var cuposOcupados = await _context.Parqueos
                         .CountAsync(p => p.Vehiculo.Tipo == vehiculo.Tipo && p.Estado == "Dentro");
                     
-                    int cuposMaximos = vehiculo.Tipo == "Carro" ? 20 : 20;
+                    int cuposMaximos = vehiculo.Tipo == TipoVehiculo.Carro ? 20 : 20;
                     estado = cuposOcupados >= cuposMaximos ? "Fuera" : "Dentro";
                 }
 
@@ -151,11 +151,11 @@ namespace WebApplication1.Controllers
                 
                 // Obtener tarifa (valor por hora)
                 var tarifa = await _context.Tarifas
-                    .FirstOrDefaultAsync(t => t.TipoVehiculo == parqueo.Vehiculo.Tipo && t.Ubicacion == parqueo.Estado);
+                    .FirstOrDefaultAsync(t => t.TipoVehiculo == parqueo.Vehiculo.Tipo.ToString() && t.Ubicacion == parqueo.Estado);
                 
                 decimal valorHora = tarifa?.ValorHora != null 
                     ? (decimal)tarifa.ValorHora 
-                    : (parqueo.Vehiculo.Tipo == "Carro" ? 2000m : 1500m); // Fallback por si no se encuentra tarifa
+                    : (parqueo.Vehiculo.Tipo == TipoVehiculo.Carro ? 2000m : 1500m); // Fallback por si no se encuentra tarifa
                 
                 // Calcular cobro (mínimo 1 hora)
                 double horasCobrar = Math.Max(1, Math.Ceiling(tiempoTotal.TotalHours));
@@ -221,8 +221,8 @@ namespace WebApplication1.Controllers
                 .Where(p => p.FechaSalida == null)
                 .ToListAsync();
 
-            var carrosDentro = vehiculosDentro.Count(v => v.Vehiculo.Tipo == "Carro");
-            var motasDentro = vehiculosDentro.Count(v => v.Vehiculo.Tipo == "Moto");
+            var carrosDentro = vehiculosDentro.Count(v => v.Vehiculo.Tipo == TipoVehiculo.Carro);
+            var motasDentro = vehiculosDentro.Count(v => v.Vehiculo.Tipo == TipoVehiculo.Moto);
 
             var hoy = DateTime.Now.Date;
             var ingresosDiarios = await _context.Parqueos

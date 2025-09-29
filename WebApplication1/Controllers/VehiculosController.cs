@@ -61,9 +61,22 @@ namespace WebApplication1.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(vehiculos);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(vehiculos);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    // Log the exception (e.g., using a logger)
+                    // For now, add a generic error to ModelState
+                    ModelState.AddModelError("", "An error occurred while saving the vehicle. Please ensure all data is valid and try again. Details: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An unexpected error occurred: " + ex.Message);
+                }
             }
             ViewData["UsuarioId"] = new SelectList(_context.Users, "Id", "UserName", vehiculos.UsuarioId);
             return View(vehiculos);

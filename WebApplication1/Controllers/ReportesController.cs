@@ -39,8 +39,8 @@ namespace WebApplication1.Controllers
 
             model.IngresosTotales = (decimal)parqueosCompletados.Sum(p => p.TotalPagar);
             model.VehiculosAtendidos = parqueosCompletados.Count;
-            model.CarrosAtendidos = parqueosCompletados.Count(p => p.Vehiculo.Tipo == "Carro");
-            model.MotosAtendidas = parqueosCompletados.Count(p => p.Vehiculo.Tipo == "Moto");
+            model.CarrosAtendidos = parqueosCompletados.Count(p => p.Vehiculo.Tipo == TipoVehiculo.Carro);
+            model.MotosAtendidas = parqueosCompletados.Count(p => p.Vehiculo.Tipo == TipoVehiculo.Moto);
 
             // Calcular tiempo promedio
             if (parqueosCompletados.Any())
@@ -75,10 +75,10 @@ namespace WebApplication1.Controllers
                 .Where(p => p.FechaSalida == null)
                 .ToListAsync();
 
-            model.CarrosDentro = parqueosActivos.Count(p => p.Vehiculo.Tipo == "Carro" && p.Estado == "Dentro");
-            model.MotosDentro = parqueosActivos.Count(p => p.Vehiculo.Tipo == "Moto" && p.Estado == "Dentro");
-            model.CarrosFuera = parqueosActivos.Count(p => p.Vehiculo.Tipo == "Carro" && p.Estado == "Fuera");
-            model.MotosFuera = parqueosActivos.Count(p => p.Vehiculo.Tipo == "Moto" && p.Estado == "Fuera");
+            model.CarrosDentro = parqueosActivos.Count(p => p.Vehiculo.Tipo == TipoVehiculo.Carro && p.Estado == "Dentro");
+            model.MotosDentro = parqueosActivos.Count(p => p.Vehiculo.Tipo == TipoVehiculo.Moto && p.Estado == "Dentro");
+            model.CarrosFuera = parqueosActivos.Count(p => p.Vehiculo.Tipo == TipoVehiculo.Carro && p.Estado == "Fuera");
+            model.MotosFuera = parqueosActivos.Count(p => p.Vehiculo.Tipo == TipoVehiculo.Moto && p.Estado == "Fuera");
 
             return View(model);
         }
@@ -99,7 +99,7 @@ namespace WebApplication1.Controllers
 
             if (!string.IsNullOrEmpty(tipoVehiculo) && tipoVehiculo != "todos")
             {
-                var tipo = tipoVehiculo == "carro" ? "Carro" : "Moto";
+                var tipo = tipoVehiculo == "carro" ? TipoVehiculo.Carro : TipoVehiculo.Moto;
                 query = query.Where(p => p.Vehiculo.Tipo == tipo);
             }
 
@@ -109,8 +109,8 @@ namespace WebApplication1.Controllers
             {
                 ingresosTotales = (decimal)parqueosCompletados.Sum(p => p.TotalPagar),
                 vehiculosAtendidos = parqueosCompletados.Count,
-                carrosAtendidos = parqueosCompletados.Count(p => p.Vehiculo.Tipo == "Carro"),
-                motosAtendidas = parqueosCompletados.Count(p => p.Vehiculo.Tipo == "Moto"),
+                carrosAtendidos = parqueosCompletados.Count(p => p.Vehiculo.Tipo == TipoVehiculo.Carro),
+                motosAtendidas = parqueosCompletados.Count(p => p.Vehiculo.Tipo == TipoVehiculo.Moto),
                 tiempoPromedio = CalcularTiempoPromedio(parqueosCompletados),
                 ocupacionPromedio = 65, // Simulado
                 historialDetallado = await GetHistorialDetallado(fechaInicio.Value, fechaFin.Value, tipoVehiculo),
@@ -141,7 +141,7 @@ namespace WebApplication1.Controllers
                 {
                     csvContent += $"{registro.Fecha:dd/MM/yyyy}," +
                                  $"{registro.Placa}," +
-                                 $"{registro.TipoVehiculo}," +
+                                 $"{registro.TipoVehiculo.ToString()}," +
                                  $"{registro.NombrePropietario}," +
                                  $"{registro.RolUsuario}," +
                                  $"{registro.HoraEntrada}," +
@@ -192,7 +192,7 @@ namespace WebApplication1.Controllers
 
             if (!string.IsNullOrEmpty(tipoVehiculo) && tipoVehiculo != "todos")
             {
-                var tipo = tipoVehiculo == "carro" ? "Carro" : "Moto";
+                var tipo = tipoVehiculo == "carro" ? TipoVehiculo.Carro : TipoVehiculo.Moto;
                 query = query.Where(p => p.Vehiculo.Tipo == tipo);
             }
 
@@ -208,13 +208,13 @@ namespace WebApplication1.Controllers
             {
                 var roles = await _userManager.GetRolesAsync(parqueo.Usuario);
                 var rol = roles.FirstOrDefault() ?? "Sin rol";
-                var tarifa = tarifas.FirstOrDefault(t => t.TipoVehiculo == parqueo.Vehiculo.Tipo && t.Ubicacion == parqueo.Estado);
+                var tarifa = tarifas.FirstOrDefault(t => t.TipoVehiculo == parqueo.Vehiculo.Tipo.ToString() && t.Ubicacion == parqueo.Estado);
 
                 resultado.Add(new HistorialDetalladoDto
                 {
                     Fecha = parqueo.FechaEntrada.Date,
                     Placa = parqueo.Vehiculo.Placa,
-                    TipoVehiculo = parqueo.Vehiculo.Tipo,
+                    TipoVehiculo = parqueo.Vehiculo.Tipo.ToString(),
                     NombrePropietario = parqueo.Usuario.Nombre,
                     RolUsuario = rol,
                     HoraEntrada = parqueo.FechaEntrada.ToString("HH:mm"),
@@ -238,7 +238,7 @@ namespace WebApplication1.Controllers
 
             if (!string.IsNullOrEmpty(tipoVehiculo) && tipoVehiculo != "todos")
             {
-                var tipo = tipoVehiculo == "carro" ? "Carro" : "Moto";
+                var tipo = tipoVehiculo == "carro" ? TipoVehiculo.Carro : TipoVehiculo.Moto;
                 query = query.Where(p => p.Vehiculo.Tipo == tipo);
             }
 
@@ -293,7 +293,7 @@ namespace WebApplication1.Controllers
 
             if (!string.IsNullOrEmpty(tipoVehiculo) && tipoVehiculo != "todos")
             {
-                var tipo = tipoVehiculo == "carro" ? "Carro" : "Moto";
+                var tipo = tipoVehiculo == "carro" ? TipoVehiculo.Carro : TipoVehiculo.Moto;
                 query = query.Where(p => p.Vehiculo.Tipo == tipo);
             }
 
@@ -302,7 +302,7 @@ namespace WebApplication1.Controllers
                 .Select(g => new PagoPorVehiculoDto
                 {
                     Placa = g.Key.Placa,
-                    TipoVehiculo = g.Key.Tipo,
+                    TipoVehiculo = g.Key.Tipo.ToString(),
                     NombrePropietario = g.Key.Nombre,
                     TotalPagado = (decimal)g.Sum(p => p.TotalPagar)
                 })

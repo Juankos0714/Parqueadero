@@ -65,7 +65,7 @@ namespace WebApplication1.Controllers
             {
                 Id = p.Id,
                 Placa = p.Vehiculo.Placa,
-                TipoVehiculo = p.Vehiculo.Tipo,
+                TipoVehiculo = p.Vehiculo.Tipo.ToString(),
                 FechaEntrada = p.FechaEntrada,
                 FechaSalida = p.FechaSalida,
                 TiempoTotal = CalcularTiempoTotal(p.FechaEntrada, p.FechaSalida),
@@ -143,7 +143,7 @@ namespace WebApplication1.Controllers
             var cuposOcupados = await _context.Parqueos
                 .CountAsync(p => p.Vehiculo.Tipo == vehiculo.Tipo && p.Estado == "Dentro");
             
-            int cuposMaximos = vehiculo.Tipo == "Carro" ? 20 : 20;
+            int cuposMaximos = vehiculo.Tipo == TipoVehiculo.Carro ? 20 : 20;
 
             if (cuposOcupados < cuposMaximos)
             {
