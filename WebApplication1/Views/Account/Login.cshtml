@@ -1,0 +1,180 @@
+@model WebApplication1.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sistema de Parqueadero SENA</title>
+
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/forms.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="~/images/sena-logo.png" alt="SENA" class="logo">
+                <h2>Sistema de Parqueadero</h2>
+                <p class="subtitle">Ingresa con tus credenciales</p>
+            </div>
+
+            <form asp-action="Login" asp-controller="Account" method="post" class="login-form" id="loginForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email Institucional
+                    </label>
+                    <input asp-for="Email" class="form-control" type="email"
+                           placeholder="usuario@misena.edu.co" autocomplete="email" />
+                    <span asp-validation-for="Email" class="field-validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Contraseña
+                    </label>
+                    <input asp-for="Password" class="form-control" type="password"
+                           placeholder="••••••••" autocomplete="current-password" />
+                    <span asp-validation-for="Password" class="field-validation-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TipoUsuario" class="form-label">
+                        <i class="fas fa-user-tag"></i>
+                        Tipo de Usuario
+                    </label>
+                    <select asp-for="TipoUsuario" class="form-control">
+                        <option value="">-- Seleccione tipo de usuario --</option>
+                        <option value="Aprendiz">Aprendiz</option>
+                        <option value="Funcionario">Funcionario</option>
+                    </select>
+                    <span asp-validation-for="TipoUsuario" class="field-validation-error"></span>
+                </div>
+
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                    <label asp-for="RememberMe" class="form-check-label">
+                        Recordar sesión
+                    </label>
+                </div>
+
+                <button type="submit" class="login-submit" id="loginButton">
+                    <span class="spinner"></span>
+                    <i class="fas fa-sign-in-alt"></i>
+                    Iniciar Sesión
+                </button>
+
+                <input asp-for="ReturnUrl" type="hidden" />
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="~/js/forms.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Configurar Toastr
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "timeOut": "5000",
+                "extendedTimeOut": "2000"
+            };
+            // Mostrar errores con Toastr
+            @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+            {
+                    foreach (var error in ViewData.ModelState.SelectMany(x => x.Value.Errors))
+                    {
+                        <script>toastr.error('@Html.Raw(error.ErrorMessage)');</script>
+        }
+    }
+
+    // Validación en tiempo real
+    $('#Email').on('blur', function() {
+    validateEmailField();
+    });
+    $('#Password').on('blur', function() {
+    validatePasswordField();
+    });
+    $('#TipoUsuario').on('change', function() {
+    validateUserTypeField();
+    });
+    // Efecto de carga en submit
+    $('#loginForm').on('submit', function() {
+    if ($(this).valid()) {
+    $('#loginButton').addClass('loading');
+    $('#loginButton').prop('disabled', true);
+    }
+    });
+
+    // Funciones de validación
+    function validateEmailField() {
+    const email = $('#Email').val();
+    const emailGroup = $('#Email').closest('.form-group');
+
+    if (email && isValidEmail(email)) {
+    $('#Email').removeClass('is-invalid').addClass('is-valid');
+    emailGroup.removeClass('invalid').addClass('valid');
+    } else if (email) {
+    $('#Email').removeClass('is-valid').addClass('is-invalid');
+    emailGroup.removeClass('valid').addClass('invalid');
+    } else {
+    $('#Email').removeClass('is-valid is-invalid');
+    emailGroup.removeClass('valid invalid');
+    }
+    }
+
+    function validatePasswordField() {
+    const password = $('#Password').val();
+    const passwordGroup = $('#Password').closest('.form-group');
+
+    if (password && password.length >= 6) {
+    $('#Password').removeClass('is-invalid').addClass('is-valid');
+    passwordGroup.removeClass('invalid').addClass('valid');
+    } else if (password) {
+    $('#Password').removeClass('is-valid').addClass('is-invalid');
+    passwordGroup.removeClass('valid').addClass('invalid');
+    } else {
+    $('#Password').removeClass('is-valid is-invalid');
+    passwordGroup.removeClass('valid invalid');
+    }
+    }
+
+    function validateUserTypeField() {
+    const userType = $('#TipoUsuario').val();
+    const userTypeGroup = $('#TipoUsuario').closest('.form-group');
+
+    if (userType) {
+    $('#TipoUsuario').removeClass('is-invalid').addClass('is-valid');
+    userTypeGroup.removeClass('invalid').addClass('valid');
+    } else {
+    $('#TipoUsuario').removeClass('is-valid').addClass('is-invalid');
+    userTypeGroup.removeClass('valid').addClass('invalid');
+    }
+    }
+
+    function isValidEmail(email) {
+    const re = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+    return re.test(email);
+    }
+    });
+    </script>
+</body>
+</html>

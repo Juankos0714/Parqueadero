@@ -15,6 +15,19 @@ namespace WebApplication1.Controllers
 
         public IActionResult Index()
         {
+            // Si el usuario ya está autenticado, redirigir al dashboard apropiado
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Funcionario"))
+                {
+                    return RedirectToAction("Dashboard", "Funcionario");
+                }
+                else if (User.IsInRole("Aprendiz"))
+                {
+                    return RedirectToAction("Dashboard", "Aprendiz");
+                }
+            }
+            
             return View();
         }
 

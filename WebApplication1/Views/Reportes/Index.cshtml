@@ -1,0 +1,748 @@
+@model WebApplication1.Models.ViewModels.ReportesViewModel
+@{
+    ViewData["Title"] = "Centro de Reportes";
+}
+
+<div class="reports-container" style="padding: 2rem; max-width: 1400px; margin: 0 auto;">
+    <div class="reports-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h1><i class="fas fa-chart-bar text-primary"></i> Centro de Reportes</h1>
+                <p class="text-muted mb-0">Análisis y estadísticas del sistema de parqueadero</p>
+            </div>
+            <div class="report-filters d-flex gap-3 flex-wrap">
+                <div class="filter-group">
+                    <label class="small fw-bold text-secondary">Período:</label>
+                    <select class="form-select form-select-sm" id="periodoFilter">
+                        <option value="hoy">Hoy</option>
+                        <option value="semana">Esta Semana</option>
+                        <option value="mes" selected>Este Mes</option>
+                        <option value="pormes">Por Mes</option>
+                        <option value="custom">Personalizado</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="small fw-bold text-secondary">Tipo de Vehículo:</label>
+                    <select class="form-select form-select-sm" id="tipoFilter">
+                        <option value="todos">Todos</option>
+                        <option value="carro">Carros</option>
+                        <option value="moto">Motos</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="updateReports()">
+                    <i class="fas fa-sync"></i> Actualizar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros de fecha personalizada (ocultos por defecto) -->
+    <div id="customDateFilters" class="row mb-4" style="display: none;">
+        <div class="col-md-4">
+            <label class="form-label">Fecha Inicio:</label>
+            <input type="date" class="form-control" id="fechaInicio" value="@DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd")">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Fecha Fin:</label>
+            <input type="date" class="form-control" id="fechaFin" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+        </div>
+    </div>
+
+    <!-- Filtros de mes y año (ocultos por defecto) -->
+    <div id="monthYearFilters" class="row mb-4" style="display: none;">
+        <div class="col-md-4">
+            <label class="form-label">Mes:</label>
+            <select class="form-select" id="mesFilter">
+                @for (int i = 1; i <= 12; i++)
+                {
+                    if (i == DateTime.Now.Month)
+                    {
+                        <option value="@i" selected>@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Año:</label>
+            <input type="number" class="form-control" id="anoFilter" value="@DateTime.Now.Year">
+        </div>
+    </div>
+
+    <!-- Cards de métricas principales -->
+    <!-- Disponibilidad Actual -->
+    <div class="availability-section mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-parking text-primary"></i>
+                    Disponibilidad Actual
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <i class="fas fa-car"></i>
+                            <span class="stat-number">@Model.CarrosDentro / 20</span>
+                            <span class="stat-label">Carros Dentro</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <i class="fas fa-motorcycle"></i>
+                            <span class="stat-number">@Model.MotosDentro / 20</span>
+                            <span class="stat-label">Motos Dentro</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <i class="fas fa-car"></i>
+                            <span class="stat-number">@Model.CarrosFuera</span>
+                            <span class="stat-label">Carros Fuera</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <i class="fas fa-motorcycle"></i>
+                            <span class="stat-number">@Model.MotosFuera</span>
+                            <span class="stat-label">Motos Fuera</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="metrics-dashboard mb-5">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="metric-card revenue-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="metric-icon me-3">
+                                <i class="fas fa-dollar-sign fa-2x text-success"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="card-subtitle mb-2 text-muted">Ingresos Totales</h6>
+                                <h3 class="card-title mb-0" id="ingresosTotales">$@Model.IngresosTotales.ToString("N0")</h3>
+                                <small class="text-success">
+                                    <i class="fas fa-arrow-up"></i> +15% vs período anterior
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="metric-card vehicles-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="metric-icon me-3">
+                                <i class="fas fa-car fa-2x text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="card-subtitle mb-2 text-muted">Vehículos Atendidos</h6>
+                                <h3 class="card-title mb-0" id="vehiculosAtendidos">@Model.VehiculosAtendidos</h3>
+                                <div class="metric-breakdown small">
+                                    <span class="text-primary">Carros: <span id="carrosAtendidos">@Model.CarrosAtendidos</span></span>
+                                    <span class="text-info ms-2">Motos: <span id="motosAtendidas">@Model.MotosAtendidas</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="metric-card time-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="metric-icon me-3">
+                                <i class="fas fa-clock fa-2x text-warning"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="card-subtitle mb-2 text-muted">Tiempo Promedio</h6>
+                                <h3 class="card-title mb-0" id="tiempoPromedio">@Model.TiempoPromedio</h3>
+                                <small class="text-muted">por vehículo</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="metric-card occupancy-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="metric-icon me-3">
+                                <i class="fas fa-percentage fa-2x text-info"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="card-subtitle mb-2 text-muted">Ocupación Promedio</h6>
+                                <h3 class="card-title mb-0" id="ocupacionPromedio">@Model.OcupacionPromedio%</h3>
+                                <div class="progress mt-2" style="height: 6px;">
+                                    <div class="progress-bar bg-info" style="width: @Model.OcupacionPromedio%" id="ocupacionBar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="charts-section mb-5">
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-line text-primary"></i>
+                            Ingresos por Día
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="ingresosDiariosChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-pie text-success"></i>
+                            Distribución por Tipo
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="distribucionTipoChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de historial detallado -->
+    <div class="detailed-history">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-table text-primary"></i>
+                        Historial Detallado
+                    </h5>
+                    <div class="table-actions d-flex gap-2">
+                        <button class="btn btn-success btn-sm" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel"></i> Excel
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="exportToPDF()">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0" id="historialTable">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Placa</th>
+                                <th>Tipo</th>
+                                <th>Propietario</th>
+                                <th>Rol</th>
+                                <th>Entrada</th>
+                                <th>Salida</th>
+                                <th>Tiempo</th>
+                                <th>Tarifa</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historialTableBody">
+                            @foreach (var registro in Model.HistorialDetallado)
+                            {
+                                <tr>
+                                    <td>@registro.Fecha.ToString("dd/MM/yyyy")</td>
+                                    <td class="fw-bold">@registro.Placa</td>
+                                    <td>
+                                        <i class="@(registro.TipoVehiculo == "Carro" ? "fas fa-car text-primary" : "fas fa-motorcycle text-info")"></i>
+                                        @registro.TipoVehiculo
+                                    </td>
+                                    <td>@registro.NombrePropietario</td>
+                                    <td>
+                                        <span class="badge @(registro.RolUsuario == "Funcionario" ? "bg-primary" : "bg-secondary")">
+                                            @registro.RolUsuario
+                                        </span>
+                                    </td>
+                                    <td>@registro.HoraEntrada</td>
+                                    <td>@registro.HoraSalida</td>
+                                    <td><span class="badge bg-info">@registro.TiempoTotal</span></td>
+                                    <td>$@registro.TarifaHora.ToString("N0")/h</td>
+                                    <td class="text-success fw-bold">$@registro.TotalPagado.ToString("N0")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @if (!Model.HistorialDetallado.Any())
+        {
+            <div class="alert alert-info text-center mt-4">
+                <i class="fas fa-info-circle fa-2x mb-3"></i>
+                <h5>No hay datos para el período seleccionado</h5>
+                <p class="mb-0">Intenta cambiar los filtros o el rango de fechas.</p>
+            </div>
+        }
+    }
+    </div>
+
+    <!-- Pagos por vehículo -->
+    <div class="pagos-por-vehiculo mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-file-invoice-dollar text-primary"></i>
+                    Total Pagado por Vehículo
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0" id="pagosPorVehiculoTable">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Placa</th>
+                                <th>Tipo</th>
+                                <th>Propietario</th>
+                                <th>Total Pagado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pagosPorVehiculoTableBody">
+                            @foreach (var pago in Model.PagosPorVehiculo)
+                            {
+                                <tr>
+                                    <td class="fw-bold">@pago.Placa</td>
+                                    <td>
+                                        <i class="@(pago.TipoVehiculo == "Carro" ? "fas fa-car text-primary" : "fas fa-motorcycle text-info")"></i>
+                                        @pago.TipoVehiculo
+                                    </td>
+                                    <td>@pago.NombrePropietario</td>
+                                    <td class="text-success fw-bold">$@pago.TotalPagado.ToString("N0")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    <script>
+        let ingresosDiariosChart;
+        let distribucionTipoChart;
+
+        $(document).ready(function() {
+            // Inicializar gráficos
+            initializeCharts();
+
+            // Event listeners
+            $('#periodoFilter').on('change', function() {
+                var selected = $(this).val();
+                if (selected === 'custom') {
+                    $('#customDateFilters').slideDown();
+                    $('#monthYearFilters').slideUp();
+                } else if (selected === 'pormes') {
+                    $('#customDateFilters').slideUp();
+                    $('#monthYearFilters').slideDown();
+                } else {
+                    $('#customDateFilters').slideUp();
+                    $('#monthYearFilters').slideUp();
+                }
+            });
+
+            // Auto-update every 5 minutes
+            setInterval(updateReports, 300000);
+        });
+
+        function initializeCharts() {
+            // Gráfico de ingresos diarios
+            const ctxIngresos = document.getElementById('ingresosDiariosChart').getContext('2d');
+            const ingresosDiariosData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.IngresosDiarios));
+
+            ingresosDiariosChart = new Chart(ctxIngresos, {
+                type: 'line',
+                data: {
+                    labels: ingresosDiariosData.map(d => new Date(d.fecha).toLocaleDateString('es-CO')),
+                    datasets: [{
+                        label: 'Ingresos Diarios',
+                        data: ingresosDiariosData.map(d => d.totalIngresos),
+                        borderColor: 'rgb(37, 99, 235)',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de distribución por tipo
+            const ctxDistribucion = document.getElementById('distribucionTipoChart').getContext('2d');
+
+            distribucionTipoChart = new Chart(ctxDistribucion, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Carros', 'Motos'],
+                    datasets: [{
+                        data: [@Model.CarrosAtendidos, @Model.MotosAtendidas],
+                        backgroundColor: [
+                            'rgb(37, 99, 235)',
+                            'rgb(8, 145, 178)'
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateReports() {
+            const periodo = $('#periodoFilter').val();
+            const tipoVehiculo = $('#tipoFilter').val();
+            let fechaInicio, fechaFin;
+
+            // Calcular fechas según período
+            const now = new Date();
+            switch (periodo) {
+                case 'hoy':
+                    fechaInicio = fechaFin = now.toISOString().split('T')[0];
+                    break;
+                case 'semana':
+                    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+                    fechaInicio = startOfWeek.toISOString().split('T')[0];
+                    fechaFin = new Date().toISOString().split('T')[0];
+                    break;
+                case 'mes':
+                    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                    fechaInicio = startOfMonth.toISOString().split('T')[0];
+                    fechaFin = new Date().toISOString().split('T')[0];
+                    break;
+                case 'pormes':
+                    const year = parseInt($('#anoFilter').val());
+                    const month = parseInt($('#mesFilter').val());
+                    fechaInicio = new Date(year, month - 1, 1).toISOString().split('T')[0];
+                    fechaFin = new Date(year, month, 0).toISOString().split('T')[0];
+                    break;
+                case 'custom':
+                    fechaInicio = $('#fechaInicio').val();
+                    fechaFin = $('#fechaFin').val();
+                    break;
+            }
+
+            // Mostrar loading
+            showLoading();
+
+            $.ajax({
+                url: '@Url.Action("FiltrarReportes", "Reportes")',
+                type: 'GET',
+                data: {
+                    fechaInicio: fechaInicio,
+                    fechaFin: fechaFin,
+                    tipoVehiculo: tipoVehiculo
+                },
+                success: function(data) {
+                    updateMetrics(data);
+                    updateCharts(data);
+                    updateHistorialTable(data.historialDetallado);
+                    updatePagosPorVehiculoTable(data.pagosPorVehiculo);
+                    notifications.success('Reportes actualizados exitosamente');
+                },
+                error: function() {
+                    notifications.error('Error al actualizar los reportes');
+                },
+                complete: function() {
+                    hideLoading();
+                }
+            });
+        }
+
+        function updateMetrics(data) {
+            $('#ingresosTotales').text('$' + data.ingresosTotales.toLocaleString());
+            $('#vehiculosAtendidos').text(data.vehiculosAtendidos);
+            $('#carrosAtendidos').text(data.carrosAtendidos);
+            $('#motosAtendidas').text(data.motosAtendidas);
+            $('#tiempoPromedio').text(data.tiempoPromedio);
+            $('#ocupacionPromedio').text(data.ocupacionPromedio + '%');
+            $('#ocupacionBar').css('width', data.ocupacionPromedio + '%');
+        }
+
+        function updateCharts(data) {
+            // Actualizar gráfico de ingresos diarios
+            ingresosDiariosChart.data.labels = data.ingresosDiarios.map(d =>
+                new Date(d.fecha).toLocaleDateString('es-CO')
+            );
+            ingresosDiariosChart.data.datasets[0].data = data.ingresosDiarios.map(d => d.totalIngresos);
+            ingresosDiariosChart.update();
+
+            // Actualizar gráfico de distribución
+            distribucionTipoChart.data.datasets[0].data = [data.carrosAtendidos, data.motosAtendidas];
+            distribucionTipoChart.update();
+        }
+
+        function updateHistorialTable(historial) {
+            const tbody = $('#historialTableBody');
+            tbody.empty();
+
+            if (historial.length === 0) {
+                tbody.append(`
+                    <tr>
+                        <td colspan="10" class="text-center text-muted py-4">
+                            <i class="fas fa-info-circle fa-2x mb-2"></i>
+                            <br>No hay registros para mostrar
+                        </td>
+                    </tr>
+                `);
+                return;
+            }
+
+            historial.forEach(registro => {
+                const tipoIcon = registro.tipoVehiculo === 'Carro' ?
+                    '<i class="fas fa-car text-primary"></i>' :
+                    '<i class="fas fa-motorcycle text-info"></i>';
+
+                const rolBadge = registro.rolUsuario === 'Funcionario' ?
+                    '<span class="badge bg-primary">' + registro.rolUsuario + '</span>' :
+                    '<span class="badge bg-secondary">' + registro.rolUsuario + '</span>';
+
+                tbody.append(`
+                    <tr>
+                        <td>${new Date(registro.fecha).toLocaleDateString('es-CO')}</td>
+                        <td class="fw-bold">${registro.placa}</td>
+                        <td>${tipoIcon} ${registro.tipoVehiculo}</td>
+                        <td>${registro.nombrePropietario}</td>
+                        <td>${rolBadge}</td>
+                        <td>${registro.horaEntrada}</td>
+                        <td>${registro.horaSalida}</td>
+                        <td><span class="badge bg-info">${registro.tiempoTotal}</span></td>
+                        <td>$${registro.tarifaHora.toLocaleString()}/h</td>
+                        <td class="text-success fw-bold">$${registro.totalPagado.toLocaleString()}</td>
+                    </tr>
+                `);
+            });
+        }
+
+        function updatePagosPorVehiculoTable(pagos) {
+            const tbody = $('#pagosPorVehiculoTableBody');
+            tbody.empty();
+
+            if (pagos.length === 0) {
+                tbody.append(`
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            <i class="fas fa-info-circle fa-2x mb-2"></i>
+                            <br>No hay pagos para mostrar
+                        </td>
+                    </tr>
+                `);
+                return;
+            }
+
+            pagos.forEach(pago => {
+                const tipoIcon = pago.tipoVehiculo === 'Carro' ?
+                    '<i class="fas fa-car text-primary"></i>' :
+                    '<i class="fas fa-motorcycle text-info"></i>';
+
+                tbody.append(`
+                    <tr>
+                        <td class="fw-bold">${pago.placa}</td>
+                        <td>${tipoIcon} ${pago.tipoVehiculo}</td>
+                        <td>${pago.nombrePropietario}</td>
+                        <td class="text-success fw-bold">${pago.totalPagado.toLocaleString()}</td>
+                    </tr>
+                `);
+            });
+        }
+
+        function exportToExcel() {
+            const params = new URLSearchParams({
+                fechaInicio: getFechaInicio(),
+                fechaFin: getFechaFin(),
+                tipoVehiculo: $('#tipoFilter').val()
+            });
+
+            notifications.info('Preparando archivo Excel...');
+            window.location.href = '@Url.Action("ExportarExcel", "Reportes")?' + params.toString();
+        }
+
+        function exportToPDF() {
+            const params = new URLSearchParams({
+                fechaInicio: getFechaInicio(),
+                fechaFin: getFechaFin(),
+                tipoVehiculo: $('#tipoFilter').val()
+            });
+
+            $.ajax({
+                url: '@Url.Action("ExportarPDF", "Reportes")?' + params.toString(),
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        notifications.info(response.message);
+                    } else {
+                        notifications.error(response.message);
+                    }
+                },
+                error: function() {
+                    notifications.error('Error al generar el PDF');
+                }
+            });
+        }
+
+        function getFechaInicio() {
+            const periodo = $('#periodoFilter').val();
+            if (periodo === 'custom') {
+                return $('#fechaInicio').val();
+            }
+            // Calcular fecha según período seleccionado
+            const now = new Date();
+            switch (periodo) {
+                case 'hoy':
+                    return now.toISOString().split('T')[0];
+                case 'semana':
+                    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+                    return startOfWeek.toISOString().split('T')[0];
+                case 'mes':
+                default:
+                    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                    return startOfMonth.toISOString().split('T')[0];
+            }
+        }
+
+        function getFechaFin() {
+            const periodo = $('#periodoFilter').val();
+            if (periodo === 'custom') {
+                return $('#fechaFin').val();
+            }
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function showLoading() {
+            // Mostrar indicadores de carga
+            $('.metric-card').addClass('loading');
+        }
+
+        function hideLoading() {
+            // Ocultar indicadores de carga
+            $('.metric-card').removeClass('loading');
+        }
+    </script>
+
+    <style>
+        .reports-container {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid #e2e8f0;
+            transition: var(--transition-normal);
+        }
+
+            .metric-card:hover {
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-lg);
+            }
+
+            .metric-card.loading {
+                opacity: 0.6;
+                pointer-events: none;
+            }
+
+        .metric-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .filter-group {
+            min-width: 150px;
+        }
+
+        .charts-section .card {
+            box-shadow: var(--shadow-md);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        .detailed-history .card {
+            box-shadow: var(--shadow-md);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        .table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.75rem;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+        }
+    </style>
+}

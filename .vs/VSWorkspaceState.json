@@ -5,9 +5,10 @@
     "\\WebApplication1\\Controllers",
     "\\WebApplication1\\Models",
     "\\WebApplication1\\Views",
+    "\\WebApplication1\\Views\\Home",
     "\\WebApplication1\\Views\\Shared",
     "\\WebApplication1\\Views\\Tarifas"
   ],
-  "SelectedNode": "\\WebApplication1\\Controllers\\ReservasController.cs",
+  "SelectedNode": "\\WebApplication1.sln",
   "PreviewInSolutionExplorer": false
 }

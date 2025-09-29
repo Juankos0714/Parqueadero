@@ -1,12 +1,13 @@
-﻿namespace WebApplication1.Models
-{
-    public class Usuarios
-    {
-        public int Id { get; set; } 
-        public string Nombre { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
-        public string PasswordHash { get; set; } = string.Empty;
-        public string Rol { get; set; } = string.Empty;
+namespace WebApplication1.Models
+{
+    // Se extiende IdentityUser para aÃ±adir propiedades personalizadas
+    public class ApplicationUser : IdentityUser
+    {
+        [StringLength(100)]
+        public string Nombre { get; set; } = string.Empty;
+        // El rol se manejarÃ¡ con el sistema de Roles de Identity, por lo que la propiedad Rol ya no es necesaria aquÃ­.
     }
 }

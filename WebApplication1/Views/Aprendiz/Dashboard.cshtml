@@ -1,0 +1,217 @@
+@model WebApplication1.Models.ViewModels.DashboardAprendizViewModel
+@{
+    ViewData["Title"] = "Dashboard Aprendiz";
+}
+
+<div class="dashboard-container">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    @if (TempData["Info"] != null)
+    {
+        <div class="alert alert-info">@TempData["Info"]</div>
+    }
+
+    <!-- Header con información del usuario -->
+    <div class="user-welcome">
+        <h1>Bienvenido, @Model.NombreUsuario</h1>
+        <div class="user-stats">
+            <div class="stat-card">
+                <i class="fas fa-car"></i>
+                <span class="stat-number">@Model.CantidadVehiculos</span>
+                <span class="stat-label">Vehículos</span>
+            </div>
+            @if (Model.ReservaActiva != null)
+            {
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <span class="stat-number">@Model.ReservaActiva.TiempoRestante</span>
+                    <span class="stat-label">Reserva Activa</span>
+                </div>
+            }
+            else
+            {
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <span class="stat-number">-</span>
+                    <span class="stat-label">Sin Reservas</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Sección de acciones principales -->
+    <div class="actions-section">
+        <div class="action-card" onclick="location.href='@Url.Action("Create", "Vehiculos")'">
+            <i class="fas fa-plus-circle"></i>
+            <h3>Registrar Vehículo</h3>
+            <p>Agrega un nuevo vehículo a tu cuenta</p>
+        </div>
+
+        <div class="action-card">
+            <i class="fas fa-bookmark"></i>
+            <h3>Hacer Reserva</h3>
+            <p>Reserva tu espacio por 30 minutos si no hay cupo.</p>
+            <form asp-action="ReservarCupo" method="post" class="mt-2">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <select name="vehiculoId" class="form-control form-control-sm">
+                        @if (Model.Vehiculos.Any())
+                        {
+                            foreach (var vehiculo in Model.Vehiculos)
+                            {
+                                <option value="@vehiculo.Id">@vehiculo.Placa</option>
+                            }
+                        }
+                        else
+                        {
+                            <option value="">No tienes vehículos</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm btn-block" @(Model.Vehiculos.Any() ? "" : "disabled")>Reservar</button>
+            </form>
+        </div>
+
+        <div class="action-card" onclick="location.href='@Url.Action("Index", "Vehiculos")'">
+            <i class="fas fa-list"></i>
+            <h3>Mis Vehículos</h3>
+            <p>Ver y administrar tus vehículos</p>
+        </div>
+
+        <div class="action-card" onclick="location.href='@Url.Action("Index", "Reservas")'">
+            <i class="fas fa-history"></i>
+            <h3>Historial Completo</h3>
+            <p>Ver todo tu historial de parqueos</p>
+        </div>
+    </div>
+
+    @if (Model.ReservaActiva != null)
+    {
+        <!-- Alerta de reserva activa -->
+        <div class="alert alert-warning mb-4">
+            <h5><i class="fas fa-exclamation-triangle"></i> Reserva Activa</h5>
+            <p class="mb-2">
+                Tienes una reserva activa para el vehículo <strong>@Model.ReservaActiva.PlacaVehiculo</strong>
+            </p>
+            <p class="mb-0">
+                <i class="fas fa-clock"></i> Tiempo restante: <strong>@Model.ReservaActiva.TiempoRestante</strong>
+            </p>
+        </div>
+    }
+
+    <!-- Historial de parqueos -->
+    <div class="history-section">
+        <h2><i class="fas fa-history"></i> Historial Reciente</h2>
+
+        @if (Model.HistorialParqueos.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Vehículo</th>
+                            <th>Fecha Entrada</th>
+                            <th>Fecha Salida</th>
+                            <th>Tiempo</th>
+                            <th>Valor Pagado</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var parqueo in Model.HistorialParqueos)
+                        {
+                            <tr>
+                                <td>
+                                    <i class="@(parqueo.TipoVehiculo == "Carro" ? "fas fa-car text-primary" : "fas fa-motorcycle text-info")"></i>
+                                    <strong>@parqueo.Placa</strong>
+                                </td>
+                                <td>@parqueo.FechaEntrada.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (parqueo.FechaSalida.HasValue)
+                                    {
+                                        @parqueo.FechaSalida.Value.ToString("dd/MM/yyyy HH:mm")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">En parqueadero</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge badge-info">@parqueo.TiempoTotal</span>
+                                </td>
+                                <td class="text-success font-weight-bold">$@parqueo.TotalPagar.ToString("N0")</td>
+                                <td>
+                                    <span class="badge @(parqueo.Estado == "Dentro" ? "badge-warning" : "badge-success")">
+                                        @parqueo.Estado
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="@Url.Action("Index", "Parqueos")" class="btn btn-outline-primary">
+                    <i class="fas fa-eye"></i>
+                    Ver Historial Completo
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle fa-2x mb-3"></i>
+                <h5>No tienes historial de parqueos</h5>
+                <p class="mb-0">Una vez que uses el parqueadero, tu historial aparecerá aquí.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Actualizar tiempo restante de reserva cada minuto
+            @if (Model.ReservaActiva != null)
+            {
+                    <text>
+                    setInterval(function() {
+                        location.reload(); // Recargar para actualizar tiempo restante
+                    }, 60000); // Cada minuto
+                    </text>
+            }
+
+            // Efectos hover para las action cards
+            $('.action-card').hover(
+                function() {
+                    $(this).find('i').addClass('pulse');
+                },
+                function() {
+                    $(this).find('i').removeClass('pulse');
+                }
+            );
+        });
+
+        // Animación pulse para iconos
+        const style = document.createElement('style');
+        style.textContent = `
+            .pulse {
+                animation: pulse 1s infinite;
+            }
+
+            @@keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+}

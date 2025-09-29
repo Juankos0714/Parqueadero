@@ -48,7 +48,7 @@ namespace WebApplication1.Controllers
         // GET: Vehiculos/Create
         public IActionResult Create()
         {
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Id");
+            ViewData["UsuarioId"] = new SelectList(_context.Users, "Id", "UserName");
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace WebApplication1.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Id", vehiculos.UsuarioId);
+            ViewData["UsuarioId"] = new SelectList(_context.Users, "Id", "UserName", vehiculos.UsuarioId);
             return View(vehiculos);
         }
 
@@ -82,7 +82,7 @@ namespace WebApplication1.Controllers
             {
                 return NotFound();
             }
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Id", vehiculos.UsuarioId);
+            ViewData["UsuarioId"] = new SelectList(_context.Users, "Id", "UserName", vehiculos.UsuarioId);
             return View(vehiculos);
         }
 
@@ -118,7 +118,7 @@ namespace WebApplication1.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Id", vehiculos.UsuarioId);
+            ViewData["UsuarioId"] = new SelectList(_context.Users, "Id", "UserName", vehiculos.UsuarioId);
             return View(vehiculos);
         }
 

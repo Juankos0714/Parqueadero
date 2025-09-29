@@ -1,0 +1,424 @@
+@model WebApplication1.Models.ViewModels.DashboardFuncionarioViewModel
+@{
+    ViewData["Title"] = "Dashboard Funcionario";
+}
+
+<div class="admin-dashboard">
+    <!-- Métricas principales -->
+    <div class="metrics-row">
+        <div class="metric-card cars">
+            <div class="metric-icon"><i class="fas fa-car"></i></div>
+            <div class="metric-content">
+                <h3 id="carrosDentro">@Model.CarrosDentro / 20</h3>
+                <p>Carros en Parqueadero</p>
+                <div class="progress">
+                    <div class="progress-bar" style="width: @(Model.CarrosDentro * 5)%" id="progressCarros"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card bikes">
+            <div class="metric-icon"><i class="fas fa-motorcycle"></i></div>
+            <div class="metric-content">
+                <h3 id="motasDentro">@Model.MotasDentro / 20</h3>
+                <p>Motos en Parqueadero</p>
+                <div class="progress">
+                    <div class="progress-bar" style="width: @(Model.MotasDentro * 5)%" id="progressMotos"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card revenue">
+            <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+            <div class="metric-content">
+                <h3 id="ingresosHoy">$@Model.IngresosHoy.ToString("N0")</h3>
+                <p>Ingresos de Hoy</p>
+            </div>
+        </div>
+
+        <div class="metric-card active">
+            <div class="metric-icon"><i class="fas fa-bookmark"></i></div>
+            <div class="metric-content">
+                <h3 id="reservasActivas">@Model.ReservasActivas</h3>
+                <p>Reservas Activas</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones rápidas -->
+    <div class="quick-actions">
+        <button class="action-btn primary" onclick="openModal('ingresoModal')">
+            <i class="fas fa-sign-in-alt"></i>
+            Registrar Ingreso
+        </button>
+        <button class="action-btn secondary" onclick="openModal('salidaModal')">
+            <i class="fas fa-sign-out-alt"></i>
+            Registrar Salida
+        </button>
+        <button class="action-btn info" onclick="location.href='@Url.Action("Index", "Reportes")'">
+            <i class="fas fa-chart-bar"></i>
+            Ver Reportes
+        </button>
+        <button class="action-btn warning" onclick="refreshDashboard()">
+            <i class="fas fa-sync-alt"></i>
+            Actualizar
+        </button>
+    </div>
+
+    <!-- Tabla de vehículos activos -->
+    <div class="active-vehicles">
+        <h2><i class="fas fa-list"></i> Vehículos en Tiempo Real</h2>
+        <div class="table-responsive">
+            <table class="table table-hover" id="vehiclesTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Placa</th>
+                        <th>Propietario</th>
+                        <th>Hora Entrada</th>
+                        <th>Tiempo Transcurrido</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var vehiculo in Model.VehiculosActivos)
+                    {
+                        <tr data-id="@vehiculo.Id">
+                            <td>
+                                <i class="@(vehiculo.Tipo == "Carro" ? "fas fa-car text-primary" : "fas fa-motorcycle text-info")"></i>
+                            </td>
+                            <td class="font-weight-bold">@vehiculo.Placa</td>
+                            <td>@vehiculo.NombrePropietario</td>
+                            <td>@vehiculo.HoraEntrada.ToString("HH:mm")</td>
+                            <td class="time-counter" data-entry="@vehiculo.HoraEntrada">
+                                <span class="badge badge-warning">@vehiculo.TiempoTranscurrido</span>
+                            </td>
+                            <td>
+                                <span class="badge @(vehiculo.Estado == "Dentro" ? "badge-success" : "badge-secondary")">
+                                    @vehiculo.Estado
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger" onclick="registrarSalida(@vehiculo.Id)">
+                                    <i class="fas fa-sign-out-alt"></i> Salida
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        @if (!Model.VehiculosActivos.Any())
+        {
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle fa-2x mb-3"></i>
+                <h5>No hay vehículos en el parqueadero</h5>
+                <p class="mb-0">Los vehículos aparecerán aquí una vez que ingresen al parqueadero.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal de Registro de Ingreso -->
+<div class="modal fade" id="ingresoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-sign-in-alt"></i> Registrar Ingreso
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="ingresoForm">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="placaIngreso">
+                            <i class="fas fa-search"></i> Buscar por Placa:
+                        </label>
+                        <input type="text" class="form-control" id="placaIngreso" 
+                               placeholder="Ej: ABC123" autocomplete="off" maxlength="10">
+                        <div class="search-results" id="searchResults"></div>
+                    </div>
+                    
+                    <div class="vehicle-info" id="vehicleInfo" style="display: none;">
+                        <div class="info-card">
+                            <h6>Información del Vehículo:</h6>
+                            <p><strong>Propietario:</strong> <span id="ownerName"></span></p>
+                            <p><strong>Tipo:</strong> <span id="vehicleType"></span></p>
+                            <p><strong>Rol:</strong> <span id="userRole"></span></p>
+                        </div>
+                    </div>
+
+                    <div class="availability-check" id="availabilityCheck" style="display: none;">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Verificando disponibilidad...
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmarIngreso" disabled onclick="registrarIngreso()">
+                    <span class="spinner" style="display: none;"></span>
+                    <i class="fas fa-check"></i> Confirmar Ingreso
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Registro de Salida -->
+<div class="modal fade" id="salidaModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">
+                    <i class="fas fa-sign-out-alt"></i> Registrar Salida
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="salidaForm">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label>Seleccionar Vehículo:</label>
+                        <select class="form-control" id="vehiculoSalida">
+                            <option value="">-- Seleccione vehículo --</option>
+                            @foreach(var v in Model.VehiculosDentro)
+                            {
+                                <option value="@v.Id" data-entry="@v.FechaEntrada">
+                                    @v.Placa - @v.NombrePropietario (@v.Tipo)
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="calculation-panel" id="calculationPanel" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label>Hora de Entrada:</label>
+                                    <span id="horaEntrada" class="value"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label>Hora de Salida:</label>
+                                    <span id="horaSalida" class="value"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label>Tiempo Total:</label>
+                                    <span id="tiempoTotal" class="value badge badge-info"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label>Total a Pagar:</label>
+                                    <span id="totalPagar" class="value text-success font-weight-bold"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tariff-breakdown mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle"></i>
+                                Tarifa aplicada: <span id="tarifaAplicada"></span>
+                            </small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning" id="confirmarSalida" disabled onclick="registrarSalida()">
+                    <span class="spinner" style="display: none;"></span>
+                    <i class="fas fa-dollar-sign"></i> Procesar Salida
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/forms.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Auto-refresh dashboard every 30 seconds
+            setInterval(() => {
+                updateDashboardMetrics();
+                updateVehicleTable();
+                updateTimeCounters();
+            }, 30000);
+
+            // Búsqueda en tiempo real para formulario de ingreso
+            $('#placaIngreso').on('input', debounce(function() {
+                const placa = $(this).val().trim();
+                if (placa.length >= 3) {
+                    searchVehicleByPlaca(placa);
+                } else {
+                    hideVehicleInfo();
+                }
+            }, 300));
+
+            // Cálculo automático de tarifas para salida
+            $('#vehiculoSalida').on('change', function() {
+                const vehicleId = $(this).val();
+                if (vehicleId) {
+                    calculateParkingFee(vehicleId);
+                } else {
+                    $('#calculationPanel').hide();
+                    $('#confirmarSalida').prop('disabled', true);
+                }
+            });
+
+            // Reset forms when modals are closed
+            $('#ingresoModal').on('hidden.bs.modal', function() {
+                resetIngresoForm();
+            });
+
+            $('#salidaModal').on('hidden.bs.modal', function() {
+                resetSalidaForm();
+            });
+
+            // Initial dashboard load
+            updateTimeCounters();
+        });
+
+        // Dashboard update functions
+        function updateDashboardMetrics() {
+            $.ajax({
+                url: '/Funcionario/ActualizarDashboard',
+                type: 'GET',
+                success: function(data) {
+                    $('#carrosDentro').text(data.carrosDentro + ' / 20');
+                    $('#progressCarros').css('width', (data.carrosDentro * 5) + '%');
+                    
+                    $('#motasDentro').text(data.motasDentro + ' / 20');
+                    $('#progressMotos').css('width', (data.motasDentro * 5) + '%');
+                    
+                    $('#ingresosHoy').text('$' + data.ingresosHoy.toLocaleString());
+                    $('#reservasActivas').text(data.reservasActivas);
+                },
+                error: function() {
+                    console.error('Error updating dashboard metrics');
+                }
+            });
+        }
+
+        function updateVehicleTable() {
+            // This would reload the vehicle table data
+            location.reload();
+        }
+
+        // Custom parking fee calculation
+        function calculateParkingFee(parqueoId) {
+            const entryTimeStr = $(`option[value="${parqueoId}"]`).data('entry');
+            const currentTime = new Date();
+            const entry = new Date(entryTimeStr);
+            
+            const diffMs = currentTime - entry;
+            const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
+            const fee = Math.max(1, diffHours) * 2000; // Mínimo 1 hora, $2000 por hora
+            
+            $('#calculationPanel').show();
+            $('#horaEntrada').text(entry.toLocaleString('es-CO', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }));
+            $('#horaSalida').text(currentTime.toLocaleString('es-CO', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }));
+            $('#tiempoTotal').text(`${Math.max(1, diffHours)} hora(s)`);
+            $('#totalPagar').text(`$${fee.toLocaleString()}`);
+            $('#tarifaAplicada').text('$2,000/hora (mín. 1h)');
+            
+            $('#confirmarSalida').prop('disabled', false);
+        }
+
+        // Enhanced vehicle search with real-time feedback
+        function searchVehicleByPlaca(placa) {
+            if (placa.length < 3) {
+                $('#searchResults').hide().empty();
+                hideVehicleInfo();
+                return;
+            }
+
+            $.ajax({
+                url: '/Funcionario/BuscarVehiculo',
+                type: 'GET',
+                data: { placa: placa },
+                success: function(response) {
+                    if (response.success) {
+                        showVehicleInfo(response.vehiculo);
+                        $('#searchResults').hide();
+                    } else {
+                        hideVehicleInfo();
+                        $('#searchResults').show().html(
+                            '<div class="search-result-item text-muted">No se encontró el vehículo</div>'
+                        );
+                    }
+                },
+                error: function() {
+                    hideVehicleInfo();
+                    notifications.error('Error al buscar vehículo');
+                }
+            });
+        }
+
+        // Enhanced vehicle info display
+        function showVehicleInfo(vehiculo) {
+            $('#vehicleInfo').show();
+            $('#ownerName').text(vehiculo.propietario);
+            $('#vehicleType').text(vehiculo.tipo);
+            $('#userRole').text(vehiculo.rol);
+            
+            // Show availability check
+            $('#availabilityCheck').show();
+            $('#availabilityCheck .alert')
+                .removeClass('alert-info alert-success alert-danger')
+                .addClass('alert-success')
+                .html(`<i class="fas fa-check-circle"></i> Cupos disponibles para ${vehiculo.tipo.toLowerCase()}s`);
+            
+            $('#confirmarIngreso').prop('disabled', false);
+        }
+
+        function hideVehicleInfo() {
+            $('#vehicleInfo').hide();
+            $('#availabilityCheck').hide();
+            $('#confirmarIngreso').prop('disabled', true);
+        }
+
+        // Form reset functions
+        function resetIngresoForm() {
+            $('#placaIngreso').val('');
+            $('#searchResults').hide().empty();
+            hideVehicleInfo();
+        }
+
+        function resetSalidaForm() {
+            $('#vehiculoSalida').val('');
+            $('#calculationPanel').hide();
+            $('#confirmarSalida').prop('disabled', true);
+        }
+    </script>
+}

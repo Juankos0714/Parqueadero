@@ -1,0 +1,543 @@
+@model WebApplication1.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Crear Cuenta";
+}
+
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-header">
+            <img src="~/images/sena-logo.png" alt="SENA Logo" class="logo">
+            <h2>Crear Cuenta</h2>
+            <p class="subtitle">Únete al Sistema de Gestión de Parqueadero</p>
+        </div>
+
+        <form asp-action="Register" method="post" id="registerForm" novalidate>
+            <div asp-validation-summary="All" class="alert alert-danger" style="display: none;"></div>
+            
+            <div class="form-group">
+                <label asp-for="Nombre" class="form-label">
+                    <i class="fas fa-user"></i>
+                    Nombre Completo
+                </label>
+                <input asp-for="Nombre" class="form-control" placeholder="Ingresa tu nombre completo">
+                <span asp-validation-for="Nombre" class="validation-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="form-label">
+                    <i class="fas fa-envelope"></i>
+                    Correo Electrónico
+                </label>
+                <input asp-for="Email" type="email" class="form-control" placeholder="ejemplo@sena.edu.co">
+                <span asp-validation-for="Email" class="validation-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password" class="form-label">
+                    <i class="fas fa-lock"></i>
+                    Contraseña
+                </label>
+                <div class="password-input-group">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Mínimo 6 caracteres" id="password">
+                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                        <i class="fas fa-eye" id="password-eye"></i>
+                    </button>
+                </div>
+                <div class="password-strength" id="password-strength">
+                    <div class="strength-bar" id="strength-bar"></div>
+                    <span class="strength-text" id="strength-text">Ingresa una contraseña</span>
+                </div>
+                <span asp-validation-for="Password" class="validation-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="form-label">
+                    <i class="fas fa-lock"></i>
+                    Confirmar Contraseña
+                </label>
+                <div class="password-input-group">
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Repite tu contraseña" id="confirmPassword">
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                        <i class="fas fa-eye" id="confirmPassword-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="validation-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TipoUsuario" class="form-label">
+                    <i class="fas fa-user-tag"></i>
+                    Tipo de Usuario
+                </label>
+                <select asp-for="TipoUsuario" class="form-control">
+                    <option value="">Selecciona tu tipo de usuario</option>
+                    <option value="Aprendiz">Aprendiz</option>
+                    <option value="Funcionario">Funcionario</option>
+                </select>
+                <span asp-validation-for="TipoUsuario" class="validation-message"></span>
+            </div>
+
+            <div class="form-group" id="numeroIdentificacionGroup" style="display: none;">
+                <label asp-for="NumeroIdentificacion" class="form-label">
+                    <i class="fas fa-id-card"></i>
+                    Número de Identificación (Opcional)
+                </label>
+                <input asp-for="NumeroIdentificacion" class="form-control" placeholder="Número de cédula o carnet">
+                <span asp-validation-for="NumeroIdentificacion" class="validation-message"></span>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    <input asp-for="AceptaTerminos" type="checkbox" class="checkbox-input">
+                    <span class="checkbox-custom"></span>
+                    <span class="checkbox-text">
+                        Acepto los <a href="#" data-toggle="modal" data-target="#termsModal">Términos y Condiciones</a>
+                    </span>
+                </label>
+                <span asp-validation-for="AceptaTerminos" class="validation-message"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="registerBtn">
+                    <span class="btn-text">Crear Cuenta</span>
+                    <span class="btn-spinner" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Creando...
+                    </span>
+                </button>
+            </div>
+        </form>
+
+        <div class="register-footer">
+            <p>¿Ya tienes una cuenta? <a asp-controller="Account" asp-action="Login" class="login-link">Iniciar Sesión</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- Terms and Conditions Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Términos y Condiciones</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>1. Aceptación de los Términos</h6>
+                <p>Al crear una cuenta en el Sistema de Gestión de Parqueadero del SENA, usted acepta cumplir con estos términos y condiciones.</p>
+                
+                <h6>2. Uso del Sistema</h6>
+                <p>El sistema debe ser utilizado únicamente para gestionar el acceso y salida de vehículos en las instalaciones del SENA de manera responsable.</p>
+                
+                <h6>3. Responsabilidades del Usuario</h6>
+                <ul>
+                    <li>Mantener la confidencialidad de sus credenciales</li>
+                    <li>Proporcionar información veraz y actualizada</li>
+                    <li>Usar el sistema de acuerdo a su rol asignado</li>
+                </ul>
+                
+                <h6>4. Privacidad de Datos</h6>
+                <p>Sus datos personales serán tratados de acuerdo a la política de privacidad del SENA y la normativa vigente.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="acceptTerms()">Aceptar Términos</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let feedback = [];
+            
+            if (password.length >= 8) strength += 1;
+            else feedback.push("Mínimo 8 caracteres");
+            
+            if (password.match(/[a-z]/)) strength += 1;
+            else feedback.push("Una letra minúscula");
+            
+            if (password.match(/[A-Z]/)) strength += 1;
+            else feedback.push("Una letra mayúscula");
+            
+            if (password.match(/[0-9]/)) strength += 1;
+            else feedback.push("Un número");
+            
+            if (password.match(/[^a-zA-Z0-9]/)) strength += 1;
+            else feedback.push("Un carácter especial");
+            
+            return { strength, feedback };
+        }
+        
+        function updatePasswordStrength() {
+            const password = $('#password').val();
+            const result = checkPasswordStrength(password);
+            const strengthBar = $('#strength-bar');
+            const strengthText = $('#strength-text');
+            
+            strengthBar.removeClass('weak medium strong very-strong');
+            
+            if (password.length === 0) {
+                strengthText.text('Ingresa una contraseña');
+                strengthBar.css('width', '0%');
+            } else if (result.strength <= 1) {
+                strengthBar.addClass('weak').css('width', '25%');
+                strengthText.text('Débil');
+            } else if (result.strength <= 2) {
+                strengthBar.addClass('medium').css('width', '50%');
+                strengthText.text('Regular');
+            } else if (result.strength <= 3) {
+                strengthBar.addClass('strong').css('width', '75%');
+                strengthText.text('Fuerte');
+            } else {
+                strengthBar.addClass('very-strong').css('width', '100%');
+                strengthText.text('Muy Fuerte');
+            }
+        }
+        
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const eye = document.getElementById(fieldId + '-eye');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                eye.className = 'fas fa-eye-slash';
+            } else {
+                field.type = 'password';
+                eye.className = 'fas fa-eye';
+            }
+        }
+        
+        function acceptTerms() {
+            $('#AceptaTerminos').prop('checked', true);
+            $('#termsModal').modal('hide');
+        }
+        
+        $(document).ready(function() {
+            $('#password').on('input', updatePasswordStrength);
+            
+            // Show identification field based on user type
+            $('#TipoUsuario').on('change', function() {
+                if ($(this).val()) {
+                    $('#numeroIdentificacionGroup').slideDown();
+                } else {
+                    $('#numeroIdentificacionGroup').slideUp();
+                }
+            });
+            
+            // Form submission with loading state
+            $('#registerForm').on('submit', function() {
+                if ($(this).valid()) {
+                    $('#registerBtn .btn-text').hide();
+                    $('#registerBtn .btn-spinner').show();
+                    $('#registerBtn').prop('disabled', true);
+                }
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .register-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .register-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .register-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            padding: 40px 30px;
+        }
+        
+        .register-header .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            background: white;
+            padding: 10px;
+        }
+        
+        .register-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 300;
+        }
+        
+        .register-header .subtitle {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .register-card form {
+            padding: 40px 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .form-label i {
+            margin-right: 8px;
+            color: #667eea;
+            width: 16px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .password-input-group {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .password-strength {
+            margin-top: 8px;
+        }
+        
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: #e1e5e9;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-bar.weak { background: #e74c3c; }
+        .strength-bar.medium { background: #f39c12; }
+        .strength-bar.strong { background: #f1c40f; }
+        .strength-bar.very-strong { background: #27ae60; }
+        
+        .strength-text {
+            font-size: 12px;
+            margin-top: 4px;
+            display: block;
+            color: #666;
+        }
+        
+        .checkbox-group {
+            margin: 30px 0;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        
+        .checkbox-input {
+            display: none;
+        }
+        
+        .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.3s ease;
+            margin-top: 2px;
+        }
+        
+        .checkbox-input:checked + .checkbox-custom {
+            background: #667eea;
+            border-color: #667eea;
+        }
+        
+        .checkbox-input:checked + .checkbox-custom:after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            top: -2px;
+            left: 3px;
+        }
+        
+        .checkbox-text {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .checkbox-text a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .checkbox-text a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .register-footer {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .register-footer p {
+            margin: 0;
+            color: #666;
+        }
+        
+        .login-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-link:hover {
+            text-decoration: underline;
+        }
+        
+        .validation-message {
+            display: block;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #e74c3c;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+        }
+        
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        /* Modal styles */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .modal-header .close {
+            color: white;
+            opacity: 0.8;
+        }
+        
+        .modal-body h6 {
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .modal-body h6:first-child {
+            margin-top: 0;
+        }
+        
+        @@media (max-width: 768px) {
+            .register-container {
+                padding: 10px;
+            }
+            
+            .register-card {
+                margin: 10px;
+            }
+            
+            .register-header {
+                padding: 30px 20px;
+            }
+            
+            .register-card form {
+                padding: 30px 20px;
+            }
+            
+            .register-footer {
+                padding: 20px;
+            }
+        }
+    </style>
+}

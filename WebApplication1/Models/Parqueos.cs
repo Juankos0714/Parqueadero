@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApplication1.Models
 {
@@ -11,12 +12,13 @@ namespace WebApplication1.Models
         public int VehiculoId { get; set; }
         public required Vehiculos Vehiculo { get; set; }
 
-        public int UsuarioId { get; set; }
-        public required Usuarios Usuario { get; set; }
+        public string UsuarioId { get; set; }
+        public required ApplicationUser Usuario { get; set; }
 
         // Propiedades
         public DateTime FechaEntrada { get; set; }
-        public DateTime? FechaSalida { get; set; }  
+        public DateTime? FechaSalida { get; set; }
+        [StringLength(50)]
         public required string Estado { get; set; }
         public double TotalPagar { get; set; }
     }

@@ -6,8 +6,8 @@
         public int VehiculoId { get; set; }
         public required Vehiculos Vehiculo { get; set; }
 
-        public int UsuarioId { get; set; }
-        public required Usuarios Usuario { get; set; }
+        public string UsuarioId { get; set; }
+        public required ApplicationUser Usuario { get; set; }
         public DateTime FechaReserva {  get; set; }
         public DateTime? ExpiraEn {  get; set; }
         public bool Activa { get; set; }

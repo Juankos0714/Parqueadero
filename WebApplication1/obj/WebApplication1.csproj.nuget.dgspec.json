@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Aprendiz\\source\\repos\\WebApplication1\\WebApplication1\\WebApplication1.csproj": {}
+    "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\WebApplication1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Aprendiz\\source\\repos\\WebApplication1\\WebApplication1\\WebApplication1.csproj": {
+    "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\WebApplication1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Aprendiz\\source\\repos\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+        "projectUniqueName": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
         "projectName": "WebApplication1",
-        "projectPath": "C:\\Users\\Aprendiz\\source\\repos\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
-        "packagesPath": "C:\\Users\\Aprendiz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Aprendiz\\source\\repos\\WebApplication1\\WebApplication1\\obj\\",
+        "projectPath": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\WebApplication1.csproj",
+        "packagesPath": "C:\\Users\\jucar\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jucar\\Documentos\\Software_Development\\Carlos Manuel\\WebApplication1\\WebApplication1\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Aprendiz\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jucar\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -50,6 +50,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
+            "Microsoft.AspNetCore.Identity.UI": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -64,9 +72,13 @@
               "target": "Package",
               "version": "[9.4.0, )"
             },
+            "MySql.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[8.0.2, )"
             }
           },
           "imports": [
@@ -88,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
